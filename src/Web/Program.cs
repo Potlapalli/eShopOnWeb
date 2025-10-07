@@ -43,6 +43,8 @@ else{
     });
 }
 
+builder.Services.AddHttpClient();
+
 builder.Services.AddCookieSettings();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
