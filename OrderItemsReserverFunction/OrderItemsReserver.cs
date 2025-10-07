@@ -1,9 +1,10 @@
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Azure.Storage.Blobs;
+using Microsoft.Extensions.Configuration;
 
 
 
@@ -11,14 +12,15 @@ namespace OrderItemsReserverFunction
 {
     public class OrderItemsReserver
     {
-        private const string ConnectionString = "DefaultEndpointsProtocol=https;AccountName=eshoponwebstrg;AccountKey=7qjJTsSQrgi8VZQEWDOYrcyO8u7gQELtVu0EtjsLQADVEGRyehEKIEACD9VsQ6gPjiDiQpptEDEE+AStt8BARQ==;EndpointSuffix=core.windows.net";
         private const string ContainerName = "orders";
 
          private readonly ILogger<OrderItemsReserver> _logger;
+         private readonly IConfiguration _configuration;
 
-        public OrderItemsReserver(ILogger<OrderItemsReserver> logger)
+        public OrderItemsReserver(ILogger<OrderItemsReserver> logger, IConfiguration configuration)
         {
             _logger = logger;
+            _configuration = configuration;
         }
 
         [Function("OrderItemsReserver")]
@@ -42,7 +44,8 @@ namespace OrderItemsReserverFunction
             string fileName = $"order-{Guid.NewGuid()}.json";
 
             // Initialize Blob Storage client
-            var blobServiceClient = new BlobServiceClient(ConnectionString);
+            var connectionString = _configuration.GetConnectionString("AzureBlobStorage");
+            var blobServiceClient = new BlobServiceClient(connectionString);
             var containerClient = blobServiceClient.GetBlobContainerClient(ContainerName);
             await containerClient.CreateIfNotExistsAsync();
 
