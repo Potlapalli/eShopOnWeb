@@ -23,8 +23,7 @@ public class OrderService : IOrderService
     private readonly IRepository<CatalogItem> _itemRepository;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IConfiguration _configuration;
-    private readonly string? _azureBlobFunctionUrl;
-    private readonly string? _azureCosmosDBFunctionUrl;
+    private readonly string? _azureFunctionUrl;
 
     public OrderService(IRepository<Basket> basketRepository,
         IRepository<CatalogItem> itemRepository,
@@ -39,8 +38,7 @@ public class OrderService : IOrderService
         _itemRepository = itemRepository;
         _httpClientFactory = httpClientFactory;
         _configuration = configuration;
-        _azureBlobFunctionUrl = _configuration["AzureFunctions:BlobFunctionUrl"];
-        _azureCosmosDBFunctionUrl = _configuration["AzureFunctions:CosmosDBFunctionUrl"];
+        _azureFunctionUrl = _configuration["AzureFunctions:FunctionUrl"];
 
     }
 
@@ -68,46 +66,23 @@ public class OrderService : IOrderService
         await _orderRepository.AddAsync(order);
 
         var httpClient = _httpClientFactory.CreateClient();
-
-        var orderDetails = new
+        var orderDetails = order.OrderItems.Select(oi => new
         {
-            orderID = order.Id.ToString(),
-            shippingAddress = new
-            {
-                street = order.ShipToAddress.Street,
-                city = order.ShipToAddress.City,
-                state = order.ShipToAddress.State,
-                country = order.ShipToAddress.Country,
-                zipCode = order.ShipToAddress.ZipCode
-            },
-            items = order.OrderItems.Select(oi => new
-            {
-                itemId = oi.ItemOrdered.CatalogItemId,
-                productName = oi.ItemOrdered.ProductName,
-                quantity = oi.Units,
-                unitPrice = oi.UnitPrice
-            }),
-            finalPrice = order.Total()
-        };
-
-
-        //var orderDetails = order.OrderItems.Select(oi => new
-        //{
-        //    ItemId = oi.ItemOrdered.CatalogItemId,
-        //    Quantity = oi.Units,
-        //});
+            ItemId = oi.ItemOrdered.CatalogItemId,
+            Quantity = oi.Units,
+        });
 
         string payload = JsonSerializer.Serialize(orderDetails);
         var content = new StringContent(payload, Encoding.UTF8, "application/json");
 
-        // var response = await httpClient.PostAsync(_azureFunctionUrl, content);
-        var response = await httpClient.PostAsync(_azureCosmosDBFunctionUrl, content);
+        var response = await httpClient.PostAsync(_azureFunctionUrl, content);
 
         if (!response.IsSuccessStatusCode)
         {
             throw new Exception("Failed to send order details to warehouse.");
         }
+
+
+
     }
-
-
 }

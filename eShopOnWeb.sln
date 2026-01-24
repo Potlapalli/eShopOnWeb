@@ -43,8 +43,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PublicApiIntegrationTests",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderItemsReserverFunction", "OrderItemsReserverFunction\OrderItemsReserverFunction.csproj", "{3012E422-C228-45E5-959B-D4C5C27092F2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderDetailsReserverFunction", "OrderDetailsReserverFunction\OrderDetailsReserverFunction.csproj", "{EBBA9075-D72A-4B6E-87F2-2FB9563D9230}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,10 +97,6 @@ Global
 		{3012E422-C228-45E5-959B-D4C5C27092F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3012E422-C228-45E5-959B-D4C5C27092F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3012E422-C228-45E5-959B-D4C5C27092F2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EBBA9075-D72A-4B6E-87F2-2FB9563D9230}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EBBA9075-D72A-4B6E-87F2-2FB9563D9230}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EBBA9075-D72A-4B6E-87F2-2FB9563D9230}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EBBA9075-D72A-4B6E-87F2-2FB9563D9230}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
