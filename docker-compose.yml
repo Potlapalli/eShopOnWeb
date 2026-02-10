@@ -1,25 +1,49 @@
-version: '3.4'
+
 
 services:
-  eshopwebmvc:
-    image: ${DOCKER_REGISTRY-}eshopwebmvc
-    build:
-      context: .
-      dockerfile: src/Web/Dockerfile
-    depends_on:
-      - "sqlserver"
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: eshop-sqlserver
+    ports:
+      - "1433:1433"
+    environment:
+      - MSSQL_SA_PASSWORD=YourStrong!Passw0rd
+      - ACCEPT_EULA=Y
+
   eshoppublicapi:
     image: ${DOCKER_REGISTRY-}eshoppublicapi
     build:
       context: .
       dockerfile: src/PublicApi/Dockerfile
+    container_name: eshop-publicapi
     depends_on:
       - "sqlserver"
-  sqlserver:
-    image: mcr.microsoft.com/azure-sql-edge
-    ports:
-      - "1433:1433"
     environment:
-      - SA_PASSWORD=@someThingComplicated1234
-      - ACCEPT_EULA=Y
+      ASPNETCORE_ENVIRONMENT: "Docker"
+      ASPNETCORE_URLS: "http://+:8080"
+      ConnectionStrings__CatalogConnection: "Server=sqlserver,1433;Database=eShopOnWeb;User Id=sa;Password=YourStrong!Passw0rd;Encrypt=False;TrustServerCertificate=True;"
+      ConnectionStrings__IdentityConnection: "Server=sqlserver,1433;Database=eShopOnWebIdnt;User Id=sa;Password=YourStrong!Passw0rd;Encrypt=False;TrustServerCertificate=True;" 
+    ports:
+      - "5101:8080"
+
+  eshopwebmvc:
+    image: ${DOCKER_REGISTRY-}eshopwebmvc
+    build:
+      context: .
+      dockerfile: src/Web/Dockerfile
+    container_name: eshop-webmvc
+    depends_on:
+      - eshoppublicapi
+      - "sqlserver"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Docker"
+      ASPNETCORE_URLS: "http://+:8080"
+      ConnectionStrings__CatalogConnection: "Server=sqlserver,1433;Database=eShopOnWeb;User Id=sa;Password=YourStrong!Passw0rd;Encrypt=False;TrustServerCertificate=True;"
+      ConnectionStrings__IdentityConnection: "Server=sqlserver,1433;Database=eShopOnWebIdnt;User Id=sa;Password=YourStrong!Passw0rd;Encrypt=False;TrustServerCertificate=True;"
+      EshopPublicApiBaseurl: "http://eshoppublicapi:8080"
+    ports:
+      - "5100:8080"
+
+  
+  
 

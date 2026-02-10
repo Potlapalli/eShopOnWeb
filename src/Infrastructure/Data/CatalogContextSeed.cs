@@ -16,10 +16,9 @@ public class CatalogContextSeed
         var retryForAvailability = retry;
         try
         {
-            if (catalogContext.Database.IsSqlServer())
-            {
-                catalogContext.Database.Migrate();
-            }
+      
+             await catalogContext.Database.MigrateAsync();
+            
 
             if (!await catalogContext.CatalogBrands.AnyAsync())
             {
@@ -47,13 +46,13 @@ public class CatalogContextSeed
         }
         catch (Exception ex)
         {
-            if (retryForAvailability >= 10) throw;
+            if (retryForAvailability >= 5) throw;
 
             retryForAvailability++;
             
             logger.LogError(ex.Message);
             await SeedAsync(catalogContext, logger, retryForAvailability);
-            throw;
+           // throw;
         }
     }
 

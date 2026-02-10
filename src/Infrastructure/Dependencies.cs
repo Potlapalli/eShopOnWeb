@@ -35,6 +35,9 @@ public static class Dependencies
             services.AddDbContext<CatalogContext>(c =>
                 c.UseSqlServer(connection));
 
+             connection = configuration.GetConnectionString("IdentityConnection") ??
+                Environment.GetEnvironmentVariable("ConnectionStrings__IdentityConnection");
+
             // Add Identity DbContext
             services.AddDbContext<AppIdentityDbContext>(options =>
                 options.UseSqlServer(connection));

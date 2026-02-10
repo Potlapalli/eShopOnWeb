@@ -23,7 +23,7 @@ public class OrderService : IOrderService
     private readonly IRepository<CatalogItem> _itemRepository;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IConfiguration _configuration;
-    private readonly IOrderEventPublisher _eventPublisher;
+   //private readonly IOrderEventPublisher _eventPublisher;
     private readonly string? _azureBlobFunctionUrl;
     private readonly string? _azureCosmosDBFunctionUrl;
 
@@ -32,8 +32,8 @@ public class OrderService : IOrderService
         IRepository<Order> orderRepository,
         IUriComposer uriComposer,
         IHttpClientFactory httpClientFactory,
-        IConfiguration configuration,
-        IOrderEventPublisher eventPublisher)
+        IConfiguration configuration)
+        //IOrderEventPublisher eventPublisher)
     {
         _orderRepository = orderRepository;
         _uriComposer = uriComposer;
@@ -41,7 +41,7 @@ public class OrderService : IOrderService
         _itemRepository = itemRepository;
         _httpClientFactory = httpClientFactory;
         _configuration = configuration;
-        _eventPublisher = eventPublisher;
+       // _eventPublisher = eventPublisher;
         _azureBlobFunctionUrl = _configuration["AzureFunctions:BlobFunctionUrl"];
         _azureCosmosDBFunctionUrl = _configuration["AzureFunctions:CosmosDBFunctionUrl"];
 
@@ -106,7 +106,7 @@ public class OrderService : IOrderService
         // var response = await httpClient.PostAsync(_azureFunctionUrl, content);
         // var response = await httpClient.PostAsync(_azureCosmosDBFunctionUrl, content);
 
-        await _eventPublisher.PublishOrderCreatedAsync(order);
+       // await _eventPublisher.PublishOrderCreatedAsync(order);
 
         //if (!response.IsSuccessStatusCode)
         //{

@@ -11,38 +11,38 @@ using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 using Microsoft.Extensions.Configuration;
 
 namespace Microsoft.eShopWeb.ApplicationCore.Messaging;
-public class ServiceBusOrderEventPublisher : IOrderEventPublisher
-{
-    private readonly ServiceBusClient _client;
-    private const string TopicName = "order-created";
+//public class ServiceBusOrderEventPublisher : IOrderEventPublisher
+//{
+//    private readonly ServiceBusClient _client;
+//    private const string TopicName = "order-created";
 
-    public ServiceBusOrderEventPublisher(IConfiguration configuration)
-    {
-        _client = new ServiceBusClient(
-            configuration.GetConnectionString("ServiceBusConnection"));
-    }
+//    public ServiceBusOrderEventPublisher(IConfiguration configuration)
+//    {
+//        _client = new ServiceBusClient(
+//            configuration.GetConnectionString("ServiceBusConnection"));
+//    }
 
-    public async Task PublishOrderCreatedAsync(Order order)
-    {
-        var sender = _client.CreateSender(TopicName);
+//    public async Task PublishOrderCreatedAsync(Order order)
+//    {
+//        var sender = _client.CreateSender(TopicName);
 
-        var evt = new OrderCreatedEvent
-        {
-            OrderId = order.Id,
-            Items = order.OrderItems.Select(i => new OrderItemDto
-            {
-                ItemId = i.ItemOrdered.CatalogItemId,
-                Quantity = i.Units
-            }).ToList()
-        };
+//        var evt = new OrderCreatedEvent
+//        {
+//            OrderId = order.Id,
+//            Items = order.OrderItems.Select(i => new OrderItemDto
+//            {
+//                ItemId = i.ItemOrdered.CatalogItemId,
+//                Quantity = i.Units
+//            }).ToList()
+//        };
 
-        var json = JsonSerializer.Serialize(evt);
+//        var json = JsonSerializer.Serialize(evt);
 
-        var message = new ServiceBusMessage(json)
-        {
-            ContentType = "application/json"
-        };
+//        var message = new ServiceBusMessage(json)
+//        {
+//            ContentType = "application/json"
+//        };
 
-        await sender.SendMessageAsync(message);
-    }
-}
+//        await sender.SendMessageAsync(message);
+//    }
+//}
